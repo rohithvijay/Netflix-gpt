@@ -61,7 +61,6 @@ const Login = () => {
           const errorCode = error.code;
           const errorMessage = error.message;
           setErrorMessage(errorCode + "-" + errorMessage);
-          console.log(errorCode, errorMessage);
         });
     } else {
       // Sign In Logic
@@ -85,9 +84,6 @@ const Login = () => {
   return (
     <div>
       <Header />
-      {/* <div className="absolute">
-        <img className="h-screen object-cover" src={BG_URL} alt="logo" />
-      </div> */}
       <div className="bg-custom-image w-screen h-screen bg-cover flex flex-col justify-center items-center">
         <form
           onSubmit={(e) => e.preventDefault()}
