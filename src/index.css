@@ -6,4 +6,7 @@ body {
   margin: 0;
   font-family: "Poppins";
 }
+.swiper-button-next, .swiper-button-prev {
+  color:#ffffff !important;
+}
 

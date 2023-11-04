@@ -85,7 +85,7 @@ const GptSearchBar = () => {
           <input
             ref={searchText}
             type="text"
-            className="p-4 w-full rounded-lg text-xs sm:text-lg h-10 md:h-16"
+            className="p-4 w-full rounded-lg text-xs sm:text-lg h-10 md:h-16 pr-7 md:pr-14"
             value={inputValue}
             onChange={handleInputChange}
             placeholder={lang[langKey].gptSearchPlaceholder}
@@ -93,14 +93,14 @@ const GptSearchBar = () => {
           {inputValue.length > 0 && (
             <FontAwesomeIcon
               icon={faClose}
-              className="absolute right-5 top-4 text-2xl font-bold cursor-pointer h-10 md:h-16"
+              className="absolute right-3 md:right-5 top-3 md:top-3 text-2xl font-bold cursor-pointer h-4 md:h-10"
               onClick={clearInput}
             />
           )}
         </div>
 
         <button
-          className="col-span-5 md:col-span-3 m-4 py-2 px-4 bg-red-700 text-white rounded-lg text-xs sm:text-lg"
+          className="col-span-5 md:col-span-3 m-4 py-2 px-4 bg-red-700 text-white rounded-lg text-xs sm:text-lg h-10 md:h-16"
           onClick={handleGptSearchClick}
         >
           {lang[langKey].search}
