@@ -1,14 +1,30 @@
 import openai from "../utils/openai";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
 import { API_OPTIONS } from "../utils/constants";
-import { addGptMovieResult } from "../utils/gptSlice";
+import { addGptMovieResult, clearGptSearchResult } from "../utils/gptSlice";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loader from "./Loader";
 
 const GptSearchBar = () => {
   const dispatch = useDispatch();
   const langKey = useSelector((store) => store.config.lang);
   const searchText = useRef(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+    setErrorMessage("");
+  };
+
+  const clearInput = () => {
+    setInputValue("");
+    dispatch(clearGptSearchResult());
+  };
 
   // search movie in TMDB
   const searchMovieTMDB = async (movie) => {
@@ -25,6 +41,12 @@ const GptSearchBar = () => {
 
   const handleGptSearchClick = async () => {
     // Make an API call to GPT API and get Movie Results
+    if (searchText.current.value.length === 0) {
+      const errorMessage = "Enter something";
+      setErrorMessage(errorMessage);
+      return;
+    }
+    setLoading(true);
 
     const gptQuery =
       "Act as a Movie Recommendation system and suggest some movies for the query : " +
@@ -40,46 +62,53 @@ const GptSearchBar = () => {
       // TODO: Write Error Handling
     }
 
-    console.log(gptResults.choices?.[0]?.message?.content);
-
-    // Andaz Apna Apna, Hera Pheri, Chupke Chupke, Jaane Bhi Do Yaaro, Padosan
     const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
-
-    // ["Andaz Apna Apna", "Hera Pheri", "Chupke Chupke", "Jaane Bhi Do Yaaro", "Padosan"]
-
-    // For each movie I will search TMDB API
-
     const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
 
     const tmdbResults = await Promise.all(promiseArray);
-
-    console.log(tmdbResults);
+    setLoading(false);
 
     dispatch(
       addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
     );
   };
 
-  return (
-    <div className="pt-[35%] md:pt-[10%] flex justify-center">
+
+  return (   
+    <div className="flex items-center flex-col mt-24 sm:mt-16">
+      <p className="text-red-500 font-bold text-lg py-2">{errorMessage}</p>
       <form
         className="w-full md:w-1/2 bg-black grid grid-cols-12"
         onSubmit={(e) => e.preventDefault()}
       >
-        <input
-          ref={searchText}
-          type="text"
-          className=" p-4 m-4 col-span-9"
-          placeholder={lang[langKey].gptSearchPlaceholder}
-        />
+        <div className="relative col-span-7 md:col-span-9 m-4">
+          <input
+            ref={searchText}
+            type="text"
+            className="p-4 w-full rounded-lg text-xs sm:text-lg h-10 md:h-16"
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder={lang[langKey].gptSearchPlaceholder}
+          />
+          {inputValue.length > 0 && (
+            <FontAwesomeIcon
+              icon={faClose}
+              className="absolute right-5 top-4 text-2xl font-bold cursor-pointer h-10 md:h-16"
+              onClick={clearInput}
+            />
+          )}
+        </div>
+
         <button
-          className="col-span-3 m-4 py-2 px-4 bg-red-700 text-white rounded-lg"
+          className="col-span-5 md:col-span-3 m-4 py-2 px-4 bg-red-700 text-white rounded-lg text-xs sm:text-lg"
           onClick={handleGptSearchClick}
         >
           {lang[langKey].search}
         </button>
+        {loading ? <Loader /> : null}
       </form>
     </div>
+    
   );
 };
 export default GptSearchBar;

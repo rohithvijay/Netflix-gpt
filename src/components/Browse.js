@@ -18,7 +18,7 @@ const Browse = () => {
 
   return (
     <div>
-      <Header />
+      <Header movieId= ""/>
       {showGptSearch ? (
         <GptSearch />
       ) : (
