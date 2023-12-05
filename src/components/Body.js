@@ -1,28 +1,17 @@
-import { createBrowserRouter } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import Browse from "./Browse";
 import Login from "./Login";
-import { RouterProvider } from "react-router-dom";
 import Movie from "./Movie";
+import { Routes, Route } from "react-router-dom";
 
 const Body = () => {
-  const appRouter = createBrowserRouter([
-    {
-      path: "/",
-      element: <Login />,
-    },
-    {
-      path: "/browse",
-      element: <Browse />,
-    },
-    {
-      path: "/movie/:id",
-      element: <Movie />,
-    },
-  ]);
-
   return (
     <div>
-      <RouterProvider router={appRouter} />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/movie/:id" element={<Movie />} />
+        <Route path="/browse" element={<Browse />} />
+      </Routes>
     </div>
   );
 };
