@@ -1,4 +1,3 @@
-import { HashRouter as Router } from "react-router-dom";
 import Browse from "./Browse";
 import Login from "./Login";
 import Movie from "./Movie";
